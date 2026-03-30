@@ -7,7 +7,7 @@ const visitService = {
   },
 
   getVisits: async (filter = {}) => {
-    const visits = await Visit.find(filter)
+    const visits = await Visit.find(filter).sort('-date')
       .populate("employee", "name phone")
       .populate("client", "name phone")
       .populate({

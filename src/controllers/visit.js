@@ -1,9 +1,34 @@
 const visitService = require("~/services/visit");
+const mongoose = require("mongoose");
 
 const createVisit = async (req, res) => {
   try {
     const visit = await visitService.createVisit(req.body);
     res.status(201).json(visit);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+const getVisitsByClient = async (req, res) => {
+  try {
+    const { clientId } = req.params;
+
+    if (!clientId) {
+      return res.status(400).json({ error: "clientId is required" });
+    }
+
+    const threeMonthsAgo = new Date();
+    threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 4);
+
+    const filter = {
+      client: new mongoose.Types.ObjectId(clientId),
+      date: { $gte: threeMonthsAgo }, 
+    };
+
+    const visits = await visitService.getVisits(filter);
+
+    res.status(200).json(visits);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -60,6 +85,7 @@ const deleteVisit = async (req, res) => {
 
 module.exports = {
   createVisit,
+  getVisitsByClient,
   getVisits,
   getVisitById,
   updateVisit,

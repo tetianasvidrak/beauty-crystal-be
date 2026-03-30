@@ -39,7 +39,7 @@ const serviceService = {
   updateService: async (id, updateData) => {
     try {
       return await Service.findByIdAndUpdate(id, updateData, {
-        new: true,
+        // new: true,
       }).populate("category", "name displayColor");
     } catch (err) {
       if (err.code === 11000) {
